@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>All Surveys - Survey Management</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #222;
+        }
+
+
+        .page {
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 25px 30px;
+            margin-bottom: 20px;
+            border: 1px solid #e1e5eb;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.07);
+        }
+
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+
+        .header h1 {
+            margin: 0;
+            font-size: 30px;
+            color: #222;
+        }
+
+
+        .header p {
+            margin: 8px 0 0;
+            color: #666;
+            font-size: 15px;
+        }
+
+
+        .back-btn {
+            display: inline-block;
+            text-decoration: none;
+            background: #4f46e5;
+            color: white;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+
+        .back-btn:hover {
+            background: #4338ca;
+        }
+
+
+        /* =========================
+           ERROR
+        ========================= */
+
+        .error-box {
+            display: none;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            padding: 15px 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           SUMMARY
+        ========================= */
+
+        .summary {
+            background: white;
+            border-radius: 12px;
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            border: 1px solid #e1e5eb;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.07);
+        }
+
+
+        .summary-title {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+
+        .summary-count {
+            font-size: 30px;
+            font-weight: bold;
+            color: #222;
+        }
+
+
+        /* =========================
+           TABLE
+        ========================= */
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e1e5eb;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.07);
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 950px;
+        }
+
+
+        thead {
+            background: #f4f5f9;
+        }
+
+
+        th {
+            text-align: left;
+            padding: 15px 13px;
+            font-size: 14px;
+            color: #444;
+            border-bottom: 1px solid #e2e5eb;
+            white-space: nowrap;
+        }
+
+
+        td {
+            padding: 15px 13px;
+            border-bottom: 1px solid #edf0f4;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+
+        tbody tr:hover {
+            background: #fafbff;
+        }
+
+
+        /* =========================
+           ID
+        ========================= */
+
+        .id-badge {
+            display: inline-block;
+            background: #eef2ff;
+            color: #4338ca;
+            padding: 5px 9px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+
+        /* =========================
+           TITLE
+        ========================= */
+
+        .survey-title {
+            font-weight: 600;
+            color: #222;
+        }
+
+
+        .description {
+            max-width: 280px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+
+        /* =========================
+           STATUS
+        ========================= */
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+
+        .status.published,
+        .status.active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+
+        .status.draft {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+
+        .status.closed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+
+        /* =========================
+           COUNTS
+        ========================= */
+
+        .count-number {
+            font-weight: 600;
+            color: #333;
+        }
+
+
+        /* =========================
+           DELETE BUTTON
+        ========================= */
+
+        .delete-btn {
+            border: none;
+            background: #dc2626;
+            color: white;
+            padding: 9px 14px;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+
+        .delete-btn:hover {
+            background: #b91c1c;
+        }
+
+
+        .delete-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+
+        /* =========================
+           LOADING
+        ========================= */
+
+        .loading {
+            text-align: center;
+            padding: 50px 20px;
+            color: #777;
+            font-size: 15px;
+        }
+
+
+        /* =========================
+           EMPTY
+        ========================= */
+
+        .empty {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+            color: #777;
+        }
+
+
+        .empty-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+
+        .empty-text {
+            font-size: 14px;
+            color: #777;
+        }
+
+
+        /* =========================
+           DELETE MODAL
+        ========================= */
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 9999;
+        }
+
+
+        .modal {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+        }
+
+
+        .modal h2 {
+            margin: 0 0 10px;
+            font-size: 22px;
+        }
+
+
+        .modal p {
+            margin: 0;
+            color: #666;
+            line-height: 1.6;
+        }
+
+
+        .modal-warning {
+            margin-top: 15px;
+            padding: 12px;
+            background: #fff7ed;
+            color: #9a3412;
+            border: 1px solid #fed7aa;
+            border-radius: 7px;
+            font-size: 14px;
+        }
+
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+
+        .modal-btn {
+            border: none;
+            padding: 10px 18px;
+            border-radius: 7px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+
+        .cancel-btn {
+            background: #e5e7eb;
+            color: #333;
+        }
+
+
+        .cancel-btn:hover {
+            background: #d1d5db;
+        }
+
+
+        .confirm-delete-btn {
+            background: #dc2626;
+            color: white;
+        }
+
+
+        .confirm-delete-btn:hover {
+            background: #b91c1c;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            .page {
+                padding: 15px;
+            }
+
+
+            .header {
+                padding: 20px;
+            }
+
+
+            .header-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+
+            .back-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+
+            .table-container {
+                padding: 12px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="page">
+
+    <div class="container">
+
+
+        <!-- =========================
+             HEADER
+        ========================= -->
+
+        <div class="header">
+
+            <div class="header-top">
+
+                <div>
+
+                    <h1>
+                        All Surveys
+                    </h1>
+
+                    <p>
+                        Manage your created surveys.
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="{{ url_for('dashboard') }}"
+                    class="back-btn"
+                >
+                    ← Dashboard
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             ERROR
+        ========================= -->
+
+        <div
+            id="errorBox"
+            class="error-box"
+        ></div>
+
+
+        <!-- =========================
+             SUMMARY
+        ========================= -->
+
+        <div class="summary">
+
+            <div class="summary-title">
+                Total Surveys
+            </div>
+
+            <div
+                id="surveyCount"
+                class="summary-count"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             SURVEY TABLE
+        ========================= -->
+
+        <div class="table-container">
+
+
+            <div
+                id="loading"
+                class="loading"
+            >
+                Loading surveys...
+            </div>
+
+
+            <div
+                id="empty"
+                class="empty"
+            >
+
+                <div class="empty-title">
+                    No Surveys Found
+                </div>
+
+                <div class="empty-text">
+                    You have not created any surveys yet.
+                </div>
+
+            </div>
+
+
+            <table
+                id="surveyTable"
+                style="display:none;"
+            >
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Survey ID
+                        </th>
+
+                        <th>
+                            Survey Title
+                        </th>
+
+                        <th>
+                            Description
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Questions
+                        </th>
+
+                        <th>
+                            Responses
+                        </th>
+
+                        <th>
+                            Created At
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody
+                    id="surveyBody"
+                ></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     DELETE CONFIRMATION MODAL
+========================= -->
+
+<div
+    class="modal-overlay"
+    id="deleteModal"
+>
+
+    <div class="modal">
+
+        <h2>
+            Delete Survey?
+        </h2>
+
+        <p>
+            Are you sure you want to delete this survey?
+        </p>
+
+
+        <div class="modal-warning">
+
+            This will permanently delete the survey,
+            its questions, and all responses related
+            to this survey.
+
+        </div>
+
+
+        <div class="modal-buttons">
+
+            <button
+                type="button"
+                class="modal-btn cancel-btn"
+                onclick="closeDeleteModal()"
+            >
+                Cancel
+            </button>
+
+
+            <button
+                type="button"
+                class="modal-btn confirm-delete-btn"
+                id="confirmDeleteButton"
+                onclick="confirmDelete()"
+            >
+                Delete Survey
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let selectedSurveyId = null;
+
+
+    /* =========================
+       ELEMENTS
+    ========================= */
+
+    const loading =
+        document.getElementById("loading");
+
+    const empty =
+        document.getElementById("empty");
+
+    const surveyTable =
+        document.getElementById("surveyTable");
+
+    const surveyBody =
+        document.getElementById("surveyBody");
+
+    const surveyCount =
+        document.getElementById("surveyCount");
+
+    const errorBox =
+        document.getElementById("errorBox");
+
+    const deleteModal =
+        document.getElementById("deleteModal");
+
+    const confirmDeleteButton =
+        document.getElementById(
+            "confirmDeleteButton"
+        );
+
+
+    /* =========================
+       ESCAPE HTML
+    ========================= */
+
+    function escapeHtml(value) {
+
+        if (value === null || value === undefined) {
+            return "";
+        }
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    /* =========================
+       SHOW ERROR
+    ========================= */
+
+    function showError(message) {
+
+        errorBox.textContent =
+            message || "Something went wrong.";
+
+        errorBox.style.display = "block";
+    }
+
+
+    /* =========================
+       HIDE ERROR
+    ========================= */
+
+    function hideError() {
+
+        errorBox.textContent = "";
+
+        errorBox.style.display = "none";
+    }
+
+
+    /* =========================
+       FORMAT DATE
+    ========================= */
+
+    function formatDate(value) {
+
+        if (!value) {
+            return "-";
+        }
+
+        const date = new Date(
+            value.replace(" ", "T") + "Z"
+        );
+
+        if (isNaN(date.getTime())) {
+            return value;
+        }
+
+        return date.toLocaleString();
+    }
+
+
+    /* =========================
+       LOAD SURVEYS
+    ========================= */
+
+    async function loadSurveys() {
+
+        hideError();
+
+        loading.style.display = "block";
+
+        empty.style.display = "none";
+
+        surveyTable.style.display = "none";
+
+        surveyBody.innerHTML = "";
+
+        try {
+
+            const response =
+                await fetch("/api/surveys", {
+                    method: "GET",
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                });
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok || !data.success) {
+
+                throw new Error(
+                    data.message ||
+                    "Unable to load surveys."
+                );
+
+            }
+
+
+            const surveys =
+                Array.isArray(data.surveys)
+                    ? data.surveys
+                    : [];
+
+
+            surveyCount.textContent =
+                surveys.length;
+
+
+            loading.style.display = "none";
+
+
+            if (surveys.length === 0) {
+
+                empty.style.display = "block";
+
+                return;
+            }
+
+
+            surveys.forEach(function(survey) {
+
+                const row =
+                    document.createElement("tr");
+
+
+                const status =
+                    String(
+                        survey.status || "draft"
+                    ).toLowerCase();
+
+
+                row.innerHTML = `
+
+                    <td>
+                        <span class="id-badge">
+                            ${escapeHtml(survey.id)}
+                        </span>
+                    </td>
+
+
+                    <td>
+                        <div class="survey-title">
+                            ${escapeHtml(
+                                survey.title
+                            )}
+                        </div>
+                    </td>
+
+
+                    <td>
+                        <div class="description">
+                            ${escapeHtml(
+                                survey.description || "-"
+                            )}
+                        </div>
+                    </td>
+
+
+                    <td>
+                        <span class="status ${escapeHtml(status)}">
+                            ${escapeHtml(status)}
+                        </span>
+                    </td>
+
+
+                    <td>
+                        <span class="count-number">
+                            ${escapeHtml(
+                                survey.question_count || 0
+                            )}
+                        </span>
+                    </td>
+
+
+                    <td>
+                        <span class="count-number">
+                            ${escapeHtml(
+                                survey.response_count || 0
+                            )}
+                        </span>
+                    </td>
+
+
+                    <td>
+                        ${escapeHtml(
+                            formatDate(
+                                survey.created_at
+                            )
+                        )}
+                    </td>
+
+
+                    <td>
+
+                        <button
+                            type="button"
+                            class="delete-btn"
+                            onclick="openDeleteModal(${Number(survey.id)})"
+                        >
+                            Delete
+                        </button>
+
+                    </td>
+
+                `;
+
+
+                surveyBody.appendChild(row);
+
+            });
+
+
+            surveyTable.style.display = "table";
+
+        }
+
+        catch (error) {
+
+            loading.style.display = "none";
+
+            showError(
+                error.message ||
+                "Unable to load surveys."
+            );
+
+        }
+
+    }
+
+
+    /* =========================
+       OPEN DELETE MODAL
+    ========================= */
+
+    function openDeleteModal(surveyId) {
+
+        selectedSurveyId = surveyId;
+
+        deleteModal.style.display = "flex";
+    }
+
+
+    /* =========================
+       CLOSE DELETE MODAL
+    ========================= */
+
+    function closeDeleteModal() {
+
+        selectedSurveyId = null;
+
+        deleteModal.style.display = "none";
+
+        confirmDeleteButton.disabled = false;
+
+        confirmDeleteButton.textContent =
+            "Delete Survey";
+    }
+
+
+    /* =========================
+       CONFIRM DELETE
+    ========================= */
+
+    async function confirmDelete() {
+
+        if (!selectedSurveyId) {
+            return;
+        }
+
+
+        confirmDeleteButton.disabled = true;
+
+        confirmDeleteButton.textContent =
+            "Deleting...";
+
+
+        hideError();
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/surveys/${selectedSurveyId}`,
+                    {
+                        method: "DELETE",
+                        headers: {
+                            "Accept": "application/json"
+                        }
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok || !data.success) {
+
+                throw new Error(
+                    data.message ||
+                    "Unable to delete survey."
+                );
+
+            }
+
+
+            closeDeleteModal();
+
+
+            await loadSurveys();
+
+        }
+
+        catch (error) {
+
+            confirmDeleteButton.disabled = false;
+
+            confirmDeleteButton.textContent =
+                "Delete Survey";
+
+
+            showError(
+                error.message ||
+                "Unable to delete survey."
+            );
+
+        }
+
+    }
+
+
+    /* =========================
+       CLOSE MODAL ON BACKGROUND
+    ========================= */
+
+    deleteModal.addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target === deleteModal
+            ) {
+
+                closeDeleteModal();
+
+            }
+
+        }
+    );
+
+
+    /* =========================
+       ESC KEY
+    ========================= */
+
+    document.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Escape" &&
+                deleteModal.style.display === "flex"
+            ) {
+
+                closeDeleteModal();
+
+            }
+
+        }
+    );
+
+
+    /* =========================
+       LOAD ON PAGE OPEN
+    ========================= */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            loadSurveys();
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

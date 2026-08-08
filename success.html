@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Survey Submitted</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background: #f4f7fc;
+        }
+
+
+        .success-box {
+
+            background: white;
+
+            width: 600px;
+
+            max-width: 90%;
+
+            padding: 50px 40px;
+
+            border-radius: 15px;
+
+            text-align: center;
+
+            box-shadow:
+                0 5px 25px
+                rgba(0, 0, 0, 0.10);
+        }
+
+
+        .success-icon {
+
+            width: 50px;
+
+            height: 50px;
+
+            display: inline-flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background: #16a34a;
+
+            color: white;
+
+            border: 3px solid #111;
+
+            font-size: 32px;
+
+            font-weight: bold;
+
+            margin-right: 15px;
+
+            vertical-align: middle;
+
+            border-radius: 50%;
+        }
+
+
+        h1 {
+
+            display: inline-block;
+
+            vertical-align: middle;
+
+            color: #ffffff;
+
+            background: #3567d6;
+
+            font-size: 36px;
+
+            padding: 3px 8px;
+
+            margin-bottom: 25px;
+        }
+
+
+        p {
+
+            font-size: 20px;
+
+            color: #6b7280;
+
+            margin-bottom: 25px;
+        }
+
+
+        /* =========================
+           RESPONSE COUNT
+        ========================= */
+
+        .response-count-box {
+
+            margin: 20px auto 30px;
+
+            padding: 18px 25px;
+
+            background: #f8fafc;
+
+            border: 1px solid #e2e8f0;
+
+            border-radius: 10px;
+
+            max-width: 350px;
+        }
+
+
+        .response-count-title {
+
+            font-size: 14px;
+
+            color: #64748b;
+
+            margin-bottom: 5px;
+        }
+
+
+        .response-count {
+
+            font-size: 32px;
+
+            font-weight: 700;
+
+            color: #2563eb;
+        }
+
+
+        .buttons {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 18px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .btn {
+
+            display: inline-block;
+
+            padding: 14px 28px;
+
+            background: #2563eb;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 10px;
+
+            font-size: 18px;
+
+            transition: 0.2s;
+
+            cursor: pointer;
+        }
+
+
+        .btn:hover {
+
+            background: #1d4ed8;
+
+            transform: translateY(-2px);
+        }
+
+
+        .btn-secondary {
+
+            background: #64748b;
+        }
+
+
+        .btn-secondary:hover {
+
+            background: #475569;
+        }
+
+
+        .error-text {
+
+            color: #dc2626;
+
+            font-size: 13px;
+
+            display: none;
+
+            margin-top: 8px;
+        }
+
+
+        @media (max-width: 600px) {
+
+            .success-box {
+
+                padding: 40px 20px;
+            }
+
+
+            h1 {
+
+                font-size: 28px;
+
+                margin-top: 15px;
+            }
+
+
+            .success-icon {
+
+                margin-right: 0;
+            }
+
+
+            p {
+
+                font-size: 17px;
+            }
+
+
+            .btn {
+
+                width: 100%;
+
+                font-size: 17px;
+
+                padding: 12px 22px;
+            }
+
+
+            .buttons {
+
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="success-box">
+
+
+        <!-- SUCCESS ICON + TITLE -->
+
+        <div>
+
+            <span class="success-icon">
+                ✓
+            </span>
+
+
+            <h1>
+                Survey Submitted
+            </h1>
+
+        </div>
+
+
+        <!-- MESSAGE -->
+
+        <p>
+            Thank you for your valuable feedback.
+        </p>
+
+
+        <!-- RESPONSE COUNT -->
+
+        <div class="response-count-box">
+
+            <div class="response-count-title">
+                Total Responses
+            </div>
+
+
+            <div
+                id="responseCount"
+                class="response-count"
+            >
+                Loading...
+            </div>
+
+
+            <div
+                id="countError"
+                class="error-text"
+            >
+                Unable to load response count.
+            </div>
+
+        </div>
+
+
+        <!-- BUTTONS -->
+
+        <div class="buttons">
+
+
+            <!-- DASHBOARD -->
+
+            <a
+                href="{{ url_for('dashboard') }}"
+                class="btn"
+            >
+                Dashboard
+            </a>
+
+
+            <!-- ALL SURVEYS -->
+
+            <a
+                href="{{ url_for('surveys') }}"
+                class="btn btn-secondary"
+            >
+                All Surveys
+            </a>
+
+
+        </div>
+
+
+    </div>
+
+
+    <script>
+
+        /* =====================================================
+           LOAD LATEST RESPONSE COUNT
+        ===================================================== */
+
+        async function loadResponseCount() {
+
+            const countElement =
+                document.getElementById(
+                    "responseCount"
+                );
+
+
+            const errorElement =
+                document.getElementById(
+                    "countError"
+                );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/dashboard",
+                        {
+                            method: "GET",
+                            cache: "no-store"
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    response.ok &&
+                    data.success &&
+                    data.data
+                ) {
+
+                    countElement.textContent =
+                        data.data.total_responses ?? 0;
+
+                    errorElement.style.display =
+                        "none";
+
+                } else {
+
+                    throw new Error(
+                        "Unable to get response count."
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Response count error:",
+                    error
+                );
+
+                countElement.textContent =
+                    "0";
+
+                errorElement.style.display =
+                    "block";
+            }
+
+        }
+
+
+        /* =====================================================
+           LOAD COUNT WHEN PAGE OPENS
+        ===================================================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                loadResponseCount();
+
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>

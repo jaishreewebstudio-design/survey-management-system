@@ -1,0 +1,2155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Fill Survey - Survey Management System</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #222;
+            min-height: 100vh;
+        }
+
+
+        .page {
+            width: 100%;
+            padding: 30px 20px 60px;
+        }
+
+
+        .container {
+            width: 100%;
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 25px 30px;
+            margin-bottom: 22px;
+            border: 1px solid #e1e5eb;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+        }
+
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+
+        .header h1 {
+            font-size: 30px;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+
+        .header p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+
+        .back-btn {
+            border: none;
+            background: #f0f2f5;
+            color: #333;
+            padding: 11px 18px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+
+        .back-btn:hover {
+            background: #e3e6ea;
+        }
+
+
+        /* =========================
+           LOADING
+        ========================= */
+
+        .loading {
+            background: #ffffff;
+            border: 1px solid #e1e5eb;
+            border-radius: 12px;
+            padding: 50px;
+            text-align: center;
+            color: #666;
+        }
+
+
+        .spinner {
+            width: 35px;
+            height: 35px;
+            border: 4px solid #ddd;
+            border-top: 4px solid #333;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            animation: spin 0.8s linear infinite;
+        }
+
+
+        @keyframes spin {
+
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+
+        }
+
+
+        /* =========================
+           ERROR
+        ========================= */
+
+        .error-box {
+            display: none;
+            background: #fff0f0;
+            border: 1px solid #efb0b0;
+            color: #b42318;
+            padding: 15px 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           SURVEY CONTENT
+        ========================= */
+
+        #surveyContent {
+            display: none;
+        }
+
+
+        .section {
+            background: #ffffff;
+            border: 1px solid #e1e5eb;
+            border-radius: 12px;
+            margin-bottom: 22px;
+            overflow: hidden;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+
+        .section-title {
+            padding: 18px 25px;
+            background: #fafbfc;
+            border-bottom: 1px solid #e1e5eb;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+
+        .section-body {
+            padding: 25px;
+        }
+
+
+        .survey-description {
+            color: #666;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+
+        /* =========================
+           QUESTION
+        ========================= */
+
+        .question-card {
+            border: 1px solid #e1e5eb;
+            border-radius: 10px;
+            padding: 22px;
+            margin-bottom: 18px;
+            background: #fff;
+        }
+
+
+        .question-card:last-child {
+            margin-bottom: 0;
+        }
+
+
+        .question-card.invalid {
+            border-color: #d92d20;
+            background: #fffafa;
+        }
+
+
+        .question-number {
+            font-size: 12px;
+            color: #777;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+
+        .question-text {
+            font-size: 17px;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 17px;
+            color: #222;
+        }
+
+
+        .required {
+            color: #d92d20;
+            margin-left: 3px;
+        }
+
+
+        /* =========================
+           OPTIONS
+        ========================= */
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 7px;
+            cursor: pointer;
+            margin-bottom: 5px;
+        }
+
+
+        .option:hover {
+            background: #f6f7f9;
+        }
+
+
+        .option input {
+            width: 17px;
+            height: 17px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+
+        .option label {
+            cursor: pointer;
+            font-size: 15px;
+            line-height: 1.4;
+            flex: 1;
+        }
+
+
+        /* =========================
+           INPUTS
+        ========================= */
+
+        .answer-input,
+        .answer-select,
+        .answer-textarea {
+            width: 100%;
+            border: 1px solid #cfd5dc;
+            border-radius: 7px;
+            padding: 12px 14px;
+            font-size: 15px;
+            outline: none;
+            background: #ffffff;
+        }
+
+
+        .answer-input:focus,
+        .answer-select:focus,
+        .answer-textarea:focus {
+            border-color: #555;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+        }
+
+
+        .answer-textarea {
+            min-height: 110px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+
+        /* =========================
+           RATING
+        ========================= */
+
+        .rating-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+
+        .rating-option {
+            position: relative;
+        }
+
+
+        .rating-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+
+        .rating-option label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 48px;
+            height: 48px;
+            border: 1px solid #ccd1d7;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #ffffff;
+        }
+
+
+        .rating-option label:hover {
+            background: #f4f5f7;
+        }
+
+
+        .rating-option input:checked + label {
+            background: #222;
+            color: #ffffff;
+            border-color: #222;
+        }
+
+
+        /* =========================
+           FEEDBACK
+        ========================= */
+
+        .feedback-group {
+            margin-bottom: 22px;
+        }
+
+
+        .feedback-group:last-child {
+            margin-bottom: 0;
+        }
+
+
+        .feedback-label {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .button-area {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+
+        .btn {
+            border: none;
+            border-radius: 8px;
+            padding: 13px 25px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+
+        .btn-cancel {
+            background: #eceff2;
+            color: #333;
+        }
+
+
+        .btn-cancel:hover {
+            background: #dfe3e7;
+        }
+
+
+        .btn-submit {
+            background: #222;
+            color: #ffffff;
+            min-width: 170px;
+        }
+
+
+        .btn-submit:hover {
+            background: #000;
+        }
+
+
+        .btn-submit:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+
+        /* =========================
+           MESSAGE
+        ========================= */
+
+        .message {
+            display: none;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-top: 18px;
+            line-height: 1.5;
+        }
+
+
+        .message.error {
+            display: block;
+            background: #fff0f0;
+            color: #b42318;
+            border: 1px solid #f0b4b4;
+        }
+
+
+        .message.success {
+            display: block;
+            background: #eefbf3;
+            color: #16794c;
+            border: 1px solid #a8dfbf;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            .page {
+                padding: 15px 10px 40px;
+            }
+
+
+            .header {
+                padding: 20px;
+            }
+
+
+            .header-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+
+            .section-body {
+                padding: 18px;
+            }
+
+
+            .question-card {
+                padding: 17px;
+            }
+
+
+            .button-area {
+                flex-direction: column-reverse;
+            }
+
+
+            .btn {
+                width: 100%;
+            }
+
+
+            .rating-options {
+                gap: 7px;
+            }
+
+
+            .rating-option label {
+                width: 43px;
+                height: 43px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+    <div class="container">
+
+
+        <!-- =========================
+             HEADER
+        ========================= -->
+
+        <div class="header">
+
+            <div class="header-top">
+
+                <div>
+
+                    <h1 id="surveyTitle">
+                        Fill Survey
+                    </h1>
+
+                    <p id="surveyDescription">
+                        Please complete the survey below.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="back-btn"
+                    onclick="goBack()"
+                >
+                    ← Back
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             ERROR
+        ========================= -->
+
+        <div
+            class="error-box"
+            id="errorBox"
+        ></div>
+
+
+        <!-- =========================
+             LOADING
+        ========================= -->
+
+        <div
+            class="loading"
+            id="loadingBox"
+        >
+
+            <div class="spinner"></div>
+
+            <p>
+                Loading survey...
+            </p>
+
+        </div>
+
+
+        <!-- =========================
+             SURVEY
+        ========================= -->
+
+        <div id="surveyContent">
+
+
+            <!-- SURVEY DETAILS -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    Survey Details
+                </div>
+
+
+                <div class="section-body">
+
+                    <p
+                        class="survey-description"
+                        id="descriptionText"
+                    ></p>
+
+                </div>
+
+            </div>
+
+
+            <!-- QUESTIONS -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    Survey Questions
+                </div>
+
+
+                <div
+                    class="section-body"
+                    id="questionsContainer"
+                ></div>
+
+            </div>
+
+
+            <!-- FEEDBACK -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    Feedback
+                </div>
+
+
+                <div class="section-body">
+
+
+                    <div class="feedback-group">
+
+                        <label
+                            class="feedback-label"
+                            for="feedbackLike"
+                        >
+                            What do you like most about this survey?
+                        </label>
+
+
+                        <textarea
+                            id="feedbackLike"
+                            class="answer-textarea"
+                            placeholder="Enter your answer"
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="feedback-group">
+
+                        <label
+                            class="feedback-label"
+                            for="feedbackImprove"
+                        >
+                            What can we improve in this survey?
+                        </label>
+
+
+                        <textarea
+                            id="feedbackImprove"
+                            class="answer-textarea"
+                            placeholder="Enter your answer"
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="button-area">
+
+
+                <button
+                    type="button"
+                    class="btn btn-cancel"
+                    onclick="goBack()"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn btn-submit"
+                    id="submitButton"
+                    onclick="submitSurvey()"
+                >
+                    Submit Survey
+                </button>
+
+            </div>
+
+
+            <!-- MESSAGE -->
+
+            <div
+                class="message"
+                id="messageBox"
+            ></div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* =====================================================
+       GET SURVEY ID FROM URL
+
+       Example:
+       /fill-survey/5
+
+       This avoids Jinja inside JavaScript.
+    ===================================================== */
+
+    function getSurveyId() {
+
+        const pathParts =
+            window.location.pathname
+                .split("/")
+                .filter(Boolean);
+
+        const fillIndex =
+            pathParts.indexOf("fill-survey");
+
+        if (
+            fillIndex !== -1 &&
+            pathParts.length > fillIndex + 1
+        ) {
+
+            const id =
+                Number(
+                    pathParts[fillIndex + 1]
+                );
+
+            if (
+                Number.isInteger(id) &&
+                id > 0
+            ) {
+                return id;
+            }
+
+        }
+
+        return null;
+    }
+
+
+    const SURVEY_ID = getSurveyId();
+
+
+    /* =====================================================
+       ELEMENTS
+    ===================================================== */
+
+    const loadingBox =
+        document.getElementById("loadingBox");
+
+
+    const errorBox =
+        document.getElementById("errorBox");
+
+
+    const surveyContent =
+        document.getElementById("surveyContent");
+
+
+    const surveyTitle =
+        document.getElementById("surveyTitle");
+
+
+    const surveyDescription =
+        document.getElementById("surveyDescription");
+
+
+    const descriptionText =
+        document.getElementById("descriptionText");
+
+
+    const questionsContainer =
+        document.getElementById("questionsContainer");
+
+
+    const submitButton =
+        document.getElementById("submitButton");
+
+
+    const messageBox =
+        document.getElementById("messageBox");
+
+
+    let surveyData = null;
+
+
+    /* =====================================================
+       SHOW ERROR
+    ===================================================== */
+
+    function showError(message) {
+
+        errorBox.textContent =
+            message || "Something went wrong.";
+
+        errorBox.style.display = "block";
+
+        loadingBox.style.display = "none";
+
+        surveyContent.style.display = "none";
+    }
+
+
+    /* =====================================================
+       SHOW MESSAGE
+    ===================================================== */
+
+    function showMessage(message, type) {
+
+        messageBox.textContent = message;
+
+        messageBox.className =
+            "message " + type;
+
+        messageBox.style.display = "block";
+    }
+
+
+    /* =====================================================
+       ESCAPE HTML
+    ===================================================== */
+
+    function escapeHtml(value) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent =
+            value == null ? "" : String(value);
+
+        return div.innerHTML;
+    }
+
+
+    /* =====================================================
+       LOAD SURVEY
+    ===================================================== */
+
+    async function loadSurvey() {
+
+        if (!SURVEY_ID) {
+
+            showError(
+                "Invalid survey ID. Please open the survey again."
+            );
+
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/surveys/" + SURVEY_ID,
+                    {
+                        method: "GET",
+                        credentials: "same-origin",
+                        headers: {
+                            "Accept": "application/json"
+                        }
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok || !data.success) {
+
+                throw new Error(
+                    data.message ||
+                    "Unable to load survey."
+                );
+            }
+
+
+            surveyData =
+                data.survey;
+
+
+            if (!surveyData) {
+
+                throw new Error(
+                    "Survey data not found."
+                );
+            }
+
+
+            renderSurvey();
+
+
+        } catch (error) {
+
+            console.error(
+                "LOAD SURVEY ERROR:",
+                error
+            );
+
+
+            showError(
+                error.message ||
+                "Unable to load survey."
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       RENDER SURVEY
+    ===================================================== */
+
+    function renderSurvey() {
+
+        loadingBox.style.display =
+            "none";
+
+
+        surveyContent.style.display =
+            "block";
+
+
+        surveyTitle.textContent =
+            surveyData.title ||
+            "Fill Survey";
+
+
+        surveyDescription.textContent =
+            surveyData.description ||
+            "Please complete the survey below.";
+
+
+        descriptionText.textContent =
+            surveyData.description ||
+            "Please answer all required questions.";
+
+
+        questionsContainer.innerHTML =
+            "";
+
+
+        const questions =
+            Array.isArray(
+                surveyData.questions
+            )
+                ? surveyData.questions
+                : [];
+
+
+        if (questions.length === 0) {
+
+            showError(
+                "This survey has no questions."
+            );
+
+            return;
+        }
+
+
+        questions.forEach(
+            function(question, index) {
+
+                renderQuestion(
+                    question,
+                    index
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       RENDER QUESTION
+    ===================================================== */
+
+    function renderQuestion(
+        question,
+        index
+    ) {
+
+        const card =
+            document.createElement("div");
+
+
+        card.className =
+            "question-card";
+
+
+        card.dataset.questionId =
+            question.id || index + 1;
+
+
+        const number =
+            document.createElement("div");
+
+
+        number.className =
+            "question-number";
+
+
+        number.textContent =
+            "Question " + (index + 1);
+
+
+        card.appendChild(number);
+
+
+        const title =
+            document.createElement("div");
+
+
+        title.className =
+            "question-text";
+
+
+        title.textContent =
+            question.question || "";
+
+
+        if (question.required) {
+
+            const required =
+                document.createElement("span");
+
+
+            required.className =
+                "required";
+
+
+            required.textContent =
+                "*";
+
+
+            title.appendChild(required);
+
+        }
+
+
+        card.appendChild(title);
+
+
+        const type =
+            String(
+                question.question_type ||
+                "short_answer"
+            ).toLowerCase();
+
+
+        const options =
+            Array.isArray(
+                question.options
+            )
+                ? question.options
+                : [];
+
+
+        /* =========================
+           SHORT ANSWER
+        ========================= */
+
+        if (
+            type === "short_answer"
+        ) {
+
+            const input =
+                document.createElement("input");
+
+
+            input.type =
+                "text";
+
+
+            input.className =
+                "answer-input";
+
+
+            input.dataset.answerInput =
+                "true";
+
+
+            input.dataset.required =
+                question.required
+                    ? "1"
+                    : "0";
+
+
+            input.dataset.questionId =
+                question.id ||
+                index + 1;
+
+
+            input.placeholder =
+                "Enter your answer";
+
+
+            card.appendChild(input);
+
+        }
+
+
+        /* =========================
+           MULTIPLE CHOICE
+        ========================= */
+
+        else if (
+            type === "multiple_choice"
+        ) {
+
+            renderRadioOptions(
+                card,
+                question,
+                options,
+                index
+            );
+
+        }
+
+
+        /* =========================
+           CHECKBOX
+        ========================= */
+
+        else if (
+            type === "checkbox"
+        ) {
+
+            renderCheckboxOptions(
+                card,
+                question,
+                options,
+                index
+            );
+
+        }
+
+
+        /* =========================
+           DROPDOWN
+        ========================= */
+
+        else if (
+            type === "dropdown"
+        ) {
+
+            const select =
+                document.createElement("select");
+
+
+            select.className =
+                "answer-select";
+
+
+            select.dataset.answerInput =
+                "true";
+
+
+            select.dataset.required =
+                question.required
+                    ? "1"
+                    : "0";
+
+
+            select.dataset.questionId =
+                question.id ||
+                index + 1;
+
+
+            const defaultOption =
+                document.createElement("option");
+
+
+            defaultOption.value =
+                "";
+
+
+            defaultOption.textContent =
+                "Select an option";
+
+
+            select.appendChild(
+                defaultOption
+            );
+
+
+            options.forEach(
+                function(option) {
+
+                    const item =
+                        document.createElement("option");
+
+
+                    item.value =
+                        option;
+
+
+                    item.textContent =
+                        option;
+
+
+                    select.appendChild(
+                        item
+                    );
+
+                }
+            );
+
+
+            card.appendChild(select);
+
+        }
+
+
+        /* =========================
+           RATING
+        ========================= */
+
+        else if (
+            type === "rating_scale"
+        ) {
+
+            renderRating(
+                card,
+                question,
+                options,
+                index
+            );
+
+        }
+
+
+        /* =========================
+           LIKERT
+        ========================= */
+
+        else if (
+            type === "likert_scale"
+        ) {
+
+            renderRadioOptions(
+                card,
+                question,
+                options,
+                index
+            );
+
+        }
+
+
+        /* =========================
+           FALLBACK
+        ========================= */
+
+        else {
+
+            const input =
+                document.createElement("input");
+
+
+            input.type =
+                "text";
+
+
+            input.className =
+                "answer-input";
+
+
+            input.dataset.answerInput =
+                "true";
+
+
+            input.dataset.required =
+                question.required
+                    ? "1"
+                    : "0";
+
+
+            input.dataset.questionId =
+                question.id ||
+                index + 1;
+
+
+            input.placeholder =
+                "Enter your answer";
+
+
+            card.appendChild(input);
+
+        }
+
+
+        questionsContainer.appendChild(
+            card
+        );
+
+    }
+
+
+    /* =====================================================
+       RADIO OPTIONS
+    ===================================================== */
+
+    function renderRadioOptions(
+        card,
+        question,
+        options,
+        index
+    ) {
+
+        const wrapper =
+            document.createElement("div");
+
+
+        const groupName =
+            "question_" +
+            (
+                question.id ||
+                index + 1
+            );
+
+
+        options.forEach(
+            function(option, optionIndex) {
+
+                const row =
+                    document.createElement("div");
+
+
+                row.className =
+                    "option";
+
+
+                const input =
+                    document.createElement("input");
+
+
+                input.type =
+                    "radio";
+
+
+                input.name =
+                    groupName;
+
+
+                input.value =
+                    option;
+
+
+                input.dataset.answerInput =
+                    "true";
+
+
+                input.dataset.required =
+                    question.required
+                        ? "1"
+                        : "0";
+
+
+                input.dataset.questionId =
+                    question.id ||
+                    index + 1;
+
+
+                input.id =
+                    groupName +
+                    "_" +
+                    optionIndex;
+
+
+                const label =
+                    document.createElement("label");
+
+
+                label.htmlFor =
+                    input.id;
+
+
+                label.textContent =
+                    option;
+
+
+                row.appendChild(input);
+
+                row.appendChild(label);
+
+
+                wrapper.appendChild(row);
+
+            }
+        );
+
+
+        card.appendChild(wrapper);
+
+    }
+
+
+    /* =====================================================
+       CHECKBOX OPTIONS
+    ===================================================== */
+
+    function renderCheckboxOptions(
+        card,
+        question,
+        options,
+        index
+    ) {
+
+        const wrapper =
+            document.createElement("div");
+
+
+        options.forEach(
+            function(option, optionIndex) {
+
+                const row =
+                    document.createElement("div");
+
+
+                row.className =
+                    "option";
+
+
+                const input =
+                    document.createElement("input");
+
+
+                input.type =
+                    "checkbox";
+
+
+                input.value =
+                    option;
+
+
+                input.dataset.answerInput =
+                    "true";
+
+
+                input.dataset.required =
+                    question.required
+                        ? "1"
+                        : "0";
+
+
+                input.dataset.questionId =
+                    question.id ||
+                    index + 1;
+
+
+                input.id =
+                    "checkbox_" +
+                    (
+                        question.id ||
+                        index + 1
+                    ) +
+                    "_" +
+                    optionIndex;
+
+
+                const label =
+                    document.createElement("label");
+
+
+                label.htmlFor =
+                    input.id;
+
+
+                label.textContent =
+                    option;
+
+
+                row.appendChild(input);
+
+                row.appendChild(label);
+
+
+                wrapper.appendChild(row);
+
+            }
+        );
+
+
+        card.appendChild(wrapper);
+
+    }
+
+
+    /* =====================================================
+       RATING
+    ===================================================== */
+
+    function renderRating(
+        card,
+        question,
+        options,
+        index
+    ) {
+
+        const wrapper =
+            document.createElement("div");
+
+
+        wrapper.className =
+            "rating-options";
+
+
+        let ratingOptions =
+            options;
+
+
+        /*
+           If no options are stored,
+           automatically create 1-5.
+        */
+
+        if (
+            !Array.isArray(ratingOptions) ||
+            ratingOptions.length === 0
+        ) {
+
+            ratingOptions = [
+                "1",
+                "2",
+                "3",
+                "4",
+                "5"
+            ];
+
+        }
+
+
+        const groupName =
+            "rating_" +
+            (
+                question.id ||
+                index + 1
+            );
+
+
+        ratingOptions.forEach(
+            function(option, optionIndex) {
+
+                const item =
+                    document.createElement("div");
+
+
+                item.className =
+                    "rating-option";
+
+
+                const input =
+                    document.createElement("input");
+
+
+                input.type =
+                    "radio";
+
+
+                input.name =
+                    groupName;
+
+
+                input.value =
+                    option;
+
+
+                input.dataset.answerInput =
+                    "true";
+
+
+                input.dataset.required =
+                    question.required
+                        ? "1"
+                        : "0";
+
+
+                input.dataset.questionId =
+                    question.id ||
+                    index + 1;
+
+
+                input.id =
+                    groupName +
+                    "_" +
+                    optionIndex;
+
+
+                const label =
+                    document.createElement("label");
+
+
+                label.htmlFor =
+                    input.id;
+
+
+                label.textContent =
+                    option;
+
+
+                item.appendChild(input);
+
+                item.appendChild(label);
+
+
+                wrapper.appendChild(item);
+
+            }
+        );
+
+
+        card.appendChild(wrapper);
+
+    }
+
+
+    /* =====================================================
+       COLLECT ANSWERS
+    ===================================================== */
+
+    function collectAnswers() {
+
+        const answers = {};
+
+
+        const questions =
+            Array.isArray(
+                surveyData.questions
+            )
+                ? surveyData.questions
+                : [];
+
+
+        for (
+            let i = 0;
+            i < questions.length;
+            i++
+        ) {
+
+            const question =
+                questions[i];
+
+
+            const questionKey =
+                "question_" +
+                (
+                    question.id ||
+                    i + 1
+                );
+
+
+            const type =
+                String(
+                    question.question_type ||
+                    "short_answer"
+                ).toLowerCase();
+
+
+            const card =
+                document.querySelector(
+                    '[data-question-id="' +
+                    (
+                        question.id ||
+                        i + 1
+                    ) +
+                    '"]'
+                );
+
+
+            if (!card) {
+                continue;
+            }
+
+
+            /* =========================
+               CHECKBOX
+            ========================= */
+
+            if (
+                type === "checkbox"
+            ) {
+
+                const checked =
+                    card.querySelectorAll(
+                        'input[type="checkbox"]:checked'
+                    );
+
+
+                const values =
+                    Array.from(
+                        checked
+                    ).map(
+                        function(input) {
+                            return input.value;
+                        }
+                    );
+
+
+                answers[questionKey] =
+                    values;
+
+            }
+
+
+            /* =========================
+               RADIO / RATING / LIKERT
+            ========================= */
+
+            else if (
+                type === "multiple_choice" ||
+                type === "rating_scale" ||
+                type === "likert_scale"
+            ) {
+
+                const checked =
+                    card.querySelector(
+                        'input[type="radio"]:checked'
+                    );
+
+
+                answers[questionKey] =
+                    checked
+                        ? checked.value
+                        : "";
+
+            }
+
+
+            /* =========================
+               DROPDOWN
+            ========================= */
+
+            else if (
+                type === "dropdown"
+            ) {
+
+                const select =
+                    card.querySelector(
+                        "select"
+                    );
+
+
+                answers[questionKey] =
+                    select
+                        ? select.value
+                        : "";
+
+            }
+
+
+            /* =========================
+               SHORT ANSWER
+            ========================= */
+
+            else {
+
+                const input =
+                    card.querySelector(
+                        "input, textarea"
+                    );
+
+
+                answers[questionKey] =
+                    input
+                        ? input.value.trim()
+                        : "";
+
+            }
+
+        }
+
+
+        /* =========================
+           FEEDBACK
+        ========================= */
+
+        answers.feedbackLike =
+            document
+                .getElementById("feedbackLike")
+                .value
+                .trim();
+
+
+        answers.feedbackImprove =
+            document
+                .getElementById("feedbackImprove")
+                .value
+                .trim();
+
+
+        return answers;
+
+    }
+
+
+    /* =====================================================
+       VALIDATE ANSWERS
+    ===================================================== */
+
+    function validateAnswers() {
+
+        const questions =
+            Array.isArray(
+                surveyData.questions
+            )
+                ? surveyData.questions
+                : [];
+
+
+        document
+            .querySelectorAll(
+                ".question-card"
+            )
+            .forEach(
+                function(card) {
+
+                    card.classList.remove(
+                        "invalid"
+                    );
+
+                }
+            );
+
+
+        for (
+            let i = 0;
+            i < questions.length;
+            i++
+        ) {
+
+            const question =
+                questions[i];
+
+
+            if (!question.required) {
+                continue;
+            }
+
+
+            const questionId =
+                question.id ||
+                i + 1;
+
+
+            const card =
+                document.querySelector(
+                    '[data-question-id="' +
+                    questionId +
+                    '"]'
+                );
+
+
+            if (!card) {
+                continue;
+            }
+
+
+            const type =
+                String(
+                    question.question_type ||
+                    "short_answer"
+                ).toLowerCase();
+
+
+            let valid = false;
+
+
+            if (
+                type === "checkbox"
+            ) {
+
+                valid =
+                    card.querySelectorAll(
+                        'input[type="checkbox"]:checked'
+                    ).length > 0;
+
+            }
+
+
+            else if (
+                type === "multiple_choice" ||
+                type === "rating_scale" ||
+                type === "likert_scale"
+            ) {
+
+                valid =
+                    !!card.querySelector(
+                        'input[type="radio"]:checked'
+                    );
+
+            }
+
+
+            else {
+
+                const input =
+                    card.querySelector(
+                        "input, select, textarea"
+                    );
+
+
+                valid =
+                    input &&
+                    String(
+                        input.value || ""
+                    ).trim() !== "";
+
+            }
+
+
+            if (!valid) {
+
+                card.classList.add(
+                    "invalid"
+                );
+
+
+                showMessage(
+                    "Please answer Question " +
+                    (i + 1) +
+                    ".",
+                    "error"
+                );
+
+
+                card.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+
+
+                return false;
+            }
+
+        }
+
+
+        return true;
+
+    }
+
+
+    /* =====================================================
+       SUBMIT SURVEY
+    ===================================================== */
+
+    async function submitSurvey() {
+
+        if (!surveyData) {
+
+            showMessage(
+                "Survey is not loaded yet.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if (!validateAnswers()) {
+            return;
+        }
+
+
+        const answers =
+            collectAnswers();
+
+
+        submitButton.disabled =
+            true;
+
+
+        submitButton.textContent =
+            "Submitting...";
+
+
+        messageBox.style.display =
+            "none";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/surveys/" +
+                    SURVEY_ID +
+                    "/responses",
+                    {
+                        method: "POST",
+
+                        credentials:
+                            "same-origin",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+
+                            "Accept":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                answers:
+                                    answers
+                            })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+
+                throw new Error(
+                    data.message ||
+                    "Unable to submit response."
+                );
+            }
+
+
+            /*
+               Response successfully inserted
+               into SQLite database.
+            */
+
+            showMessage(
+                "Survey submitted successfully.",
+                "success"
+            );
+
+
+            submitButton.textContent =
+                "Submitted";
+
+
+            /*
+               Open success page after
+               successful database insertion.
+            */
+
+            setTimeout(
+                function() {
+
+                    window.location.href =
+                        "/success";
+
+                },
+                700
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "SUBMIT RESPONSE ERROR:",
+                error
+            );
+
+
+            showMessage(
+                error.message ||
+                "Unable to submit survey.",
+                "error"
+            );
+
+
+            submitButton.disabled =
+                false;
+
+
+            submitButton.textContent =
+                "Submit Survey";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       GO BACK
+    ===================================================== */
+
+    function goBack() {
+
+        window.location.href =
+            "/surveys";
+
+    }
+
+
+    /* =====================================================
+       START
+    ===================================================== */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            loadSurvey();
+
+        }
+    );
+
+</script>
+
+</body>
+
+</html>

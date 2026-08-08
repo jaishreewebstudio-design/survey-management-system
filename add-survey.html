@@ -1,0 +1,1323 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Add Survey - Survey Management</title>
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f5f7fb;
+        color: #222;
+    }
+
+    .page {
+        min-height: 100vh;
+        padding: 30px 20px;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: auto;
+    }
+
+    .header {
+        background: white;
+        border-radius: 12px;
+        padding: 24px 30px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+    }
+
+    .header h1 {
+        margin: 0 0 8px;
+        font-size: 30px;
+    }
+
+    .header p {
+        margin: 0;
+        color: #666;
+    }
+
+    .section {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+    }
+
+    .section-title {
+        font-size: 21px;
+        font-weight: bold;
+        margin-bottom: 25px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .field {
+        margin-bottom: 22px;
+    }
+
+    .field label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    input[type="text"],
+    textarea {
+        width: 100%;
+        padding: 13px 15px;
+        border: 1px solid #d5d9e2;
+        border-radius: 8px;
+        font-size: 15px;
+        outline: none;
+        transition: 0.2s;
+        font-family: inherit;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+    }
+
+    textarea {
+        min-height: 110px;
+        resize: vertical;
+    }
+
+    .question-card {
+        border: 1px solid #e1e4eb;
+        border-radius: 10px;
+        padding: 22px;
+        margin-bottom: 20px;
+        background: #fafbfe;
+    }
+
+    .question-number {
+        font-size: 14px;
+        font-weight: bold;
+        color: #4f46e5;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+    }
+
+    .question-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 11px 0;
+        color: #444;
+    }
+
+    .option input {
+        width: 17px;
+        height: 17px;
+    }
+
+    .feedback-field {
+        margin-bottom: 22px;
+    }
+
+    .feedback-field:last-child {
+        margin-bottom: 0;
+    }
+
+    .button-area {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 25px;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 8px;
+        padding: 13px 25px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-cancel {
+        background: #e5e7eb;
+        color: #333;
+    }
+
+    .btn-cancel:hover {
+        background: #d7d9df;
+    }
+
+    .btn-save {
+        background: #4f46e5;
+        color: white;
+    }
+
+    .btn-save:hover {
+        background: #4338ca;
+    }
+
+    .btn-publish {
+        background: #16a34a;
+        color: white;
+    }
+
+    .btn-publish:hover {
+        background: #15803d;
+    }
+
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .message {
+        display: none;
+        padding: 13px 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    .message.success {
+        display: block;
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .message.error {
+        display: block;
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    @media (max-width: 700px) {
+
+        .page {
+            padding: 15px;
+        }
+
+        .section {
+            padding: 20px;
+        }
+
+        .button-area {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+
+</style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h1>
+            ADD SURVEY
+        </h1>
+
+        <p>
+            Create a new survey with 6 questions.
+        </p>
+
+    </div>
+
+
+    <!-- MESSAGE -->
+
+    <div id="message"
+         class="message">
+    </div>
+
+
+    <!-- SURVEY DETAILS -->
+
+    <div class="section">
+
+        <div class="section-title">
+            SURVEY DETAILS
+        </div>
+
+
+        <div class="field">
+
+            <label for="surveyTitle">
+                Survey Title
+            </label>
+
+            <input
+                type="text"
+                id="surveyTitle"
+                placeholder="Enter survey title"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="surveyDescription">
+                Survey Description
+            </label>
+
+            <textarea
+                id="surveyDescription"
+                placeholder="Enter survey description"
+            ></textarea>
+
+        </div>
+
+    </div>
+
+
+    <!-- QUESTIONS -->
+
+    <div class="section">
+
+        <div class="section-title">
+            SURVEY QUESTIONS
+        </div>
+
+
+        <!-- QUESTION 1 -->
+
+        <div class="question-card">
+
+            <div class="question-number">
+                QUESTION 1
+            </div>
+
+            <div class="question-title">
+                How satisfied are you with our service?
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q1"
+                    value="Very Satisfied"
+                >
+                <span>Very Satisfied</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q1"
+                    value="Satisfied"
+                >
+                <span>Satisfied</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q1"
+                    value="Neutral"
+                >
+                <span>Neutral</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q1"
+                    value="Dissatisfied"
+                >
+                <span>Dissatisfied</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q1"
+                    value="Very Dissatisfied"
+                >
+                <span>Very Dissatisfied</span>
+            </div>
+
+        </div>
+
+
+        <!-- QUESTION 2 -->
+
+        <div class="question-card">
+
+            <div class="question-number">
+                QUESTION 2
+            </div>
+
+            <div class="question-title">
+                Which features do you use most often?
+            </div>
+
+            <div class="option">
+                <input
+                    type="checkbox"
+                    name="q2"
+                    value="Online Ordering"
+                >
+                <span>Online Ordering</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="checkbox"
+                    name="q2"
+                    value="Customer Support"
+                >
+                <span>Customer Support</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="checkbox"
+                    name="q2"
+                    value="Online Payment"
+                >
+                <span>Online Payment</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="checkbox"
+                    name="q2"
+                    value="Product Search"
+                >
+                <span>Product Search</span>
+            </div>
+
+        </div>
+
+
+        <!-- QUESTION 3 -->
+
+        <div class="question-card">
+
+            <div class="question-number">
+                QUESTION 3
+            </div>
+
+            <div class="question-title">
+                How did you hear about our service?
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q3"
+                    value="Google Search"
+                >
+                <span>Google Search</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q3"
+                    value="Instagram"
+                >
+                <span>Instagram</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q3"
+                    value="Friend or Family"
+                >
+                <span>Friend or Family</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q3"
+                    value="Advertisement"
+                >
+                <span>Advertisement</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q3"
+                    value="Other"
+                >
+                <span>Other</span>
+            </div>
+
+        </div>
+
+
+        <!-- QUESTION 4 -->
+
+        <div class="question-card">
+
+            <div class="question-number">
+                QUESTION 4
+            </div>
+
+            <div class="question-title">
+                How easy was it to use our service?
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q4"
+                    value="Very Easy"
+                >
+                <span>Very Easy</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q4"
+                    value="Easy"
+                >
+                <span>Easy</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q4"
+                    value="Neutral"
+                >
+                <span>Neutral</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q4"
+                    value="Difficult"
+                >
+                <span>Difficult</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q4"
+                    value="Very Difficult"
+                >
+                <span>Very Difficult</span>
+            </div>
+
+        </div>
+
+
+        <!-- QUESTION 5 -->
+
+        <div class="question-card">
+
+            <div class="question-number">
+                QUESTION 5
+            </div>
+
+            <div class="question-title">
+                How likely are you to recommend our service?
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q5"
+                    value="Very Likely"
+                >
+                <span>Very Likely</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q5"
+                    value="Likely"
+                >
+                <span>Likely</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q5"
+                    value="Neutral"
+                >
+                <span>Neutral</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q5"
+                    value="Unlikely"
+                >
+                <span>Unlikely</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q5"
+                    value="Very Unlikely"
+                >
+                <span>Very Unlikely</span>
+            </div>
+
+        </div>
+
+
+        <!-- QUESTION 6 -->
+
+        <div class="question-card">
+
+            <div class="question-number">
+                QUESTION 6
+            </div>
+
+            <div class="question-title">
+                How often do you use our service?
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q6"
+                    value="Daily"
+                >
+                <span>Daily</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q6"
+                    value="Several times a week"
+                >
+                <span>Several times a week</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q6"
+                    value="Once a week"
+                >
+                <span>Once a week</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q6"
+                    value="Occasionally"
+                >
+                <span>Occasionally</span>
+            </div>
+
+            <div class="option">
+                <input
+                    type="radio"
+                    name="q6"
+                    value="Rarely"
+                >
+                <span>Rarely</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FEEDBACK -->
+
+    <div class="section">
+
+        <div class="section-title">
+            FEEDBACK
+        </div>
+
+
+        <div class="feedback-field">
+
+            <label for="feedbackLike">
+                What do you like most about this survey?
+            </label>
+
+            <textarea
+                id="feedbackLike"
+                placeholder="Enter your answer"
+            ></textarea>
+
+        </div>
+
+
+        <div class="feedback-field">
+
+            <label for="feedbackImprove">
+                What can we improve in this survey?
+            </label>
+
+            <textarea
+                id="feedbackImprove"
+                placeholder="Enter your answer"
+            ></textarea>
+
+        </div>
+
+    </div>
+
+
+    <!-- BUTTONS -->
+
+    <div class="button-area">
+
+        <button
+            type="button"
+            class="btn btn-cancel"
+            id="cancelButton"
+            onclick="window.location.href='/surveys'"
+        >
+            Cancel
+        </button>
+
+
+        <button
+            type="button"
+            class="btn btn-save"
+            id="saveButton"
+            onclick="saveSurvey()"
+        >
+            Save Survey
+        </button>
+
+
+        <button
+            type="button"
+            class="btn btn-publish"
+            id="publishButton"
+            onclick="publishSurvey()"
+        >
+            Publish Survey
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<script>
+
+    // ========================================================
+    // SHOW MESSAGE
+    // ========================================================
+
+    function showMessage(message, type) {
+
+        const messageBox =
+            document.getElementById("message");
+
+        messageBox.textContent = message;
+
+        messageBox.className =
+            "message " + type;
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
+
+    // ========================================================
+    // CLEAR MESSAGE
+    // ========================================================
+
+    function clearMessage() {
+
+        const messageBox =
+            document.getElementById("message");
+
+        messageBox.textContent = "";
+
+        messageBox.className = "message";
+    }
+
+
+    // ========================================================
+    // GET SELECTED VALUE
+    // ========================================================
+
+    function getRadioValue(name) {
+
+        const selected =
+            document.querySelector(
+                'input[name="' + name + '"]:checked'
+            );
+
+        if (!selected) {
+            return null;
+        }
+
+        return selected.value;
+    }
+
+
+    // ========================================================
+    // GET CHECKBOX VALUES
+    // ========================================================
+
+    function getCheckboxValues(name) {
+
+        const selected =
+            document.querySelectorAll(
+                'input[name="' + name + '"]:checked'
+            );
+
+        return Array.from(selected).map(
+            function (checkbox) {
+                return checkbox.value;
+            }
+        );
+    }
+
+
+    // ========================================================
+    // COLLECT SURVEY DATA
+    // ========================================================
+
+    function collectSurveyData() {
+
+        const title =
+            document.getElementById(
+                "surveyTitle"
+            ).value.trim();
+
+
+        const description =
+            document.getElementById(
+                "surveyDescription"
+            ).value.trim();
+
+
+        if (!title) {
+
+            showMessage(
+                "Please enter a survey title.",
+                "error"
+            );
+
+            return null;
+        }
+
+
+        const answer1 =
+            getRadioValue("q1");
+
+
+        const answer2 =
+            getCheckboxValues("q2");
+
+
+        const answer3 =
+            getRadioValue("q3");
+
+
+        const answer4 =
+            getRadioValue("q4");
+
+
+        const answer5 =
+            getRadioValue("q5");
+
+
+        const answer6 =
+            getRadioValue("q6");
+
+
+        if (!answer1) {
+
+            showMessage(
+                "Please select an option for Question 1.",
+                "error"
+            );
+
+            return null;
+        }
+
+
+        if (answer2.length === 0) {
+
+            showMessage(
+                "Please select at least one option for Question 2.",
+                "error"
+            );
+
+            return null;
+        }
+
+
+        if (!answer3) {
+
+            showMessage(
+                "Please select an option for Question 3.",
+                "error"
+            );
+
+            return null;
+        }
+
+
+        if (!answer4) {
+
+            showMessage(
+                "Please select an option for Question 4.",
+                "error"
+            );
+
+            return null;
+        }
+
+
+        if (!answer5) {
+
+            showMessage(
+                "Please select an option for Question 5.",
+                "error"
+            );
+
+            return null;
+        }
+
+
+        if (!answer6) {
+
+            showMessage(
+                "Please select an option for Question 6.",
+                "error"
+            );
+
+            return null;
+        }
+
+
+        return {
+
+            title: title,
+
+            description: description,
+
+            questions: [
+
+                {
+                    question:
+                        "How satisfied are you with our service?",
+
+                    question_type:
+                        "multiple_choice",
+
+                    options: [
+                        "Very Satisfied",
+                        "Satisfied",
+                        "Neutral",
+                        "Dissatisfied",
+                        "Very Dissatisfied"
+                    ],
+
+                    required: true
+                },
+
+                {
+                    question:
+                        "Which features do you use most often?",
+
+                    question_type:
+                        "checkbox",
+
+                    options: [
+                        "Online Ordering",
+                        "Customer Support",
+                        "Online Payment",
+                        "Product Search"
+                    ],
+
+                    required: true
+                },
+
+                {
+                    question:
+                        "How did you hear about our service?",
+
+                    question_type:
+                        "multiple_choice",
+
+                    options: [
+                        "Google Search",
+                        "Instagram",
+                        "Friend or Family",
+                        "Advertisement",
+                        "Other"
+                    ],
+
+                    required: true
+                },
+
+                {
+                    question:
+                        "How easy was it to use our service?",
+
+                    question_type:
+                        "multiple_choice",
+
+                    options: [
+                        "Very Easy",
+                        "Easy",
+                        "Neutral",
+                        "Difficult",
+                        "Very Difficult"
+                    ],
+
+                    required: true
+                },
+
+                {
+                    question:
+                        "How likely are you to recommend our service?",
+
+                    question_type:
+                        "multiple_choice",
+
+                    options: [
+                        "Very Likely",
+                        "Likely",
+                        "Neutral",
+                        "Unlikely",
+                        "Very Unlikely"
+                    ],
+
+                    required: true
+                },
+
+                {
+                    question:
+                        "How often do you use our service?",
+
+                    question_type:
+                        "multiple_choice",
+
+                    options: [
+                        "Daily",
+                        "Several times a week",
+                        "Once a week",
+                        "Occasionally",
+                        "Rarely"
+                    ],
+
+                    required: true
+                }
+
+            ]
+
+        };
+    }
+
+
+    // ========================================================
+    // SET BUTTON STATE
+    // ========================================================
+
+    function setButtonsDisabled(disabled) {
+
+        document.getElementById(
+            "saveButton"
+        ).disabled = disabled;
+
+
+        document.getElementById(
+            "publishButton"
+        ).disabled = disabled;
+
+
+        document.getElementById(
+            "cancelButton"
+        ).disabled = disabled;
+    }
+
+
+    // ========================================================
+    // CREATE SURVEY
+    // ========================================================
+
+    async function createSurvey() {
+
+        const surveyData =
+            collectSurveyData();
+
+
+        if (!surveyData) {
+
+            return null;
+        }
+
+
+        const response =
+            await fetch(
+                "/api/surveys",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(
+                            surveyData
+                        )
+                }
+            );
+
+
+        let data;
+
+
+        try {
+
+            data =
+                await response.json();
+
+        } catch (error) {
+
+            throw new Error(
+                "Invalid response from server."
+            );
+        }
+
+
+        if (!response.ok || !data.success) {
+
+            throw new Error(
+                data.message ||
+                "Survey could not be saved."
+            );
+        }
+
+
+        return data.survey_id;
+    }
+
+
+    // ========================================================
+    // SAVE SURVEY AS DRAFT
+    // ========================================================
+
+    async function saveSurvey() {
+
+        clearMessage();
+
+        setButtonsDisabled(true);
+
+
+        try {
+
+            const surveyId =
+                await createSurvey();
+
+
+            if (!surveyId) {
+
+                return;
+            }
+
+
+            showMessage(
+                "Survey saved as draft successfully.",
+                "success"
+            );
+
+
+            setTimeout(
+                function () {
+
+                    window.location.href =
+                        "/surveys";
+
+                },
+                1200
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "SAVE SURVEY ERROR:",
+                error
+            );
+
+
+            showMessage(
+                error.message ||
+                "Unable to save survey.",
+                "error"
+            );
+
+
+        } finally {
+
+            setButtonsDisabled(false);
+        }
+    }
+
+
+    // ========================================================
+    // PUBLISH SURVEY
+    // ========================================================
+
+    async function publishSurvey() {
+
+        clearMessage();
+
+        setButtonsDisabled(true);
+
+
+        try {
+
+            // First create the survey as draft.
+
+            const surveyId =
+                await createSurvey();
+
+
+            if (!surveyId) {
+
+                return;
+            }
+
+
+            // Then publish the newly-created survey.
+
+            const response =
+                await fetch(
+                    "/api/surveys/" +
+                    surveyId +
+                    "/publish",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        }
+                    }
+                );
+
+
+            let data;
+
+
+            try {
+
+                data =
+                    await response.json();
+
+            } catch (error) {
+
+                throw new Error(
+                    "Invalid response from server."
+                );
+            }
+
+
+            if (!response.ok || !data.success) {
+
+                throw new Error(
+                    data.message ||
+                    "Survey could not be published."
+                );
+            }
+
+
+            showMessage(
+                "Survey published successfully.",
+                "success"
+            );
+
+
+            setTimeout(
+                function () {
+
+                    window.location.href =
+                        "/surveys";
+
+                },
+                1200
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "PUBLISH SURVEY ERROR:",
+                error
+            );
+
+
+            showMessage(
+                error.message ||
+                "Unable to publish survey.",
+                "error"
+            );
+
+
+        } finally {
+
+            setButtonsDisabled(false);
+        }
+    }
+
+</script>
+
+</body>
+
+</html>
+```

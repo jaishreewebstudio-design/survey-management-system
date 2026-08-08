@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Login - Survey Management System</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #1e3c72,
+                    #2a5298
+                );
+
+            padding: 20px;
+        }
+
+
+        /* ================= LOGIN BOX ================= */
+
+        .login-box {
+
+            width: 400px;
+
+            max-width: 100%;
+
+            background: white;
+
+            padding: 40px;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 10px 30px
+                rgba(0, 0, 0, 0.2);
+        }
+
+
+        /* ================= TITLE ================= */
+
+        .login-box h2 {
+
+            text-align: center;
+
+            margin-bottom: 25px;
+
+            color: #1e3c72;
+
+            font-size: 28px;
+        }
+
+
+        /* ================= MESSAGE ================= */
+
+        .message {
+
+            display: none;
+
+            padding: 12px;
+
+            margin-bottom: 18px;
+
+            border-radius: 8px;
+
+            text-align: center;
+
+            font-size: 14px;
+
+            line-height: 1.4;
+        }
+
+
+        .message.success {
+
+            display: block;
+
+            background: #dcfce7;
+
+            color: #166534;
+
+            border:
+                1px solid #bbf7d0;
+        }
+
+
+        .message.error {
+
+            display: block;
+
+            background: #fee2e2;
+
+            color: #991b1b;
+
+            border:
+                1px solid #fecaca;
+        }
+
+
+        /* ================= INPUT ================= */
+
+        .input-group {
+
+            margin-bottom: 18px;
+        }
+
+
+        .input-group label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-weight: 600;
+
+            color: #1f2937;
+        }
+
+
+        .input-group input {
+
+            width: 100%;
+
+            padding: 13px;
+
+            border:
+                1px solid #cbd5e1;
+
+            border-radius: 8px;
+
+            outline: none;
+
+            font-size: 15px;
+
+            color: #111827;
+        }
+
+
+        .input-group input:focus {
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37, 99, 235, 0.1);
+        }
+
+
+        /* ================= LOGIN BUTTON ================= */
+
+        .btn {
+
+            width: 100%;
+
+            padding: 13px;
+
+            border: none;
+
+            background: #1e3c72;
+
+            color: white;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 16px;
+
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+
+        .btn:hover {
+
+            background: #16325c;
+        }
+
+
+        .btn:disabled {
+
+            background: #94a3b8;
+
+            cursor: not-allowed;
+        }
+
+
+        /* ================= REGISTER LINK ================= */
+
+        .link {
+
+            text-align: center;
+
+            margin-top: 20px;
+
+            color: #64748b;
+        }
+
+
+        .link a {
+
+            text-decoration: none;
+
+            color: #1e3c72;
+
+            font-weight: bold;
+        }
+
+
+        .link a:hover {
+
+            text-decoration: underline;
+        }
+
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ======================================================
+     LOGIN BOX
+====================================================== -->
+
+<div class="login-box">
+
+
+    <h2>
+        Login
+    </h2>
+
+
+    <!-- ==================================================
+         MESSAGE
+    ================================================== -->
+
+    <div
+        id="message"
+        class="message">
+
+    </div>
+
+
+    <!-- ==================================================
+         LOGIN FORM
+    ================================================== -->
+
+    <form id="loginForm">
+
+
+        <!-- EMAIL -->
+
+        <div class="input-group">
+
+            <label for="email">
+                Email
+            </label>
+
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter Email"
+                autocomplete="email"
+                required
+            >
+
+        </div>
+
+
+        <!-- PASSWORD -->
+
+        <div class="input-group">
+
+            <label for="password">
+                Password
+            </label>
+
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter Password"
+                autocomplete="current-password"
+                required
+            >
+
+        </div>
+
+
+        <!-- LOGIN BUTTON -->
+
+        <button
+            type="submit"
+            class="btn"
+            id="loginButton">
+
+            Login
+
+        </button>
+
+
+        <!-- REGISTER -->
+
+        <div class="link">
+
+            Don't have an account?
+
+            <a href="{{ url_for('register_page') }}">
+                Create New Account
+            </a>
+
+        </div>
+
+
+    </form>
+
+
+</div>
+
+
+<script>
+
+
+// ========================================================
+// SHOW MESSAGE
+// ========================================================
+
+function showMessage(message, type) {
+
+    const messageBox =
+        document.getElementById("message");
+
+
+    messageBox.className =
+        "message " + type;
+
+
+    messageBox.textContent =
+        message;
+
+
+    messageBox.style.display =
+        "block";
+}
+
+
+// ========================================================
+// HIDE MESSAGE
+// ========================================================
+
+function hideMessage() {
+
+    const messageBox =
+        document.getElementById("message");
+
+
+    messageBox.className =
+        "message";
+
+
+    messageBox.textContent =
+        "";
+
+
+    messageBox.style.display =
+        "none";
+}
+
+
+// ========================================================
+// LOGIN FORM
+// ========================================================
+
+document
+    .getElementById("loginForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+
+            // --------------------------------------------
+            // STOP PAGE RELOAD
+            // --------------------------------------------
+
+            event.preventDefault();
+
+
+            // --------------------------------------------
+            // GET INPUTS
+            // --------------------------------------------
+
+            const email =
+                document
+                    .getElementById("email")
+                    .value
+                    .trim()
+                    .toLowerCase();
+
+
+            const password =
+                document
+                    .getElementById("password")
+                    .value;
+
+
+            const loginButton =
+                document
+                    .getElementById("loginButton");
+
+
+            // --------------------------------------------
+            // CLEAR OLD MESSAGE
+            // --------------------------------------------
+
+            hideMessage();
+
+
+            // --------------------------------------------
+            // VALIDATION
+            // --------------------------------------------
+
+            if (!email) {
+
+                showMessage(
+                    "Please enter your email.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            if (!password) {
+
+                showMessage(
+                    "Please enter your password.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            // --------------------------------------------
+            // DISABLE BUTTON
+            // --------------------------------------------
+
+            loginButton.disabled =
+                true;
+
+
+            loginButton.textContent =
+                "Logging in...";
+
+
+            try {
+
+
+                // ========================================
+                // LOGIN API
+                // ========================================
+
+                const response =
+                    await fetch(
+                        "/api/login",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    email:
+                                        email,
+
+                                    password:
+                                        password
+
+                                })
+
+                        }
+                    );
+
+
+                // ========================================
+                // READ RESPONSE
+                // ========================================
+
+                let data;
+
+
+                try {
+
+                    data =
+                        await response.json();
+
+                }
+
+                catch (jsonError) {
+
+                    data = {
+
+                        success: false,
+
+                        message:
+                            "Invalid server response."
+
+                    };
+
+                }
+
+
+                // ========================================
+                // LOGIN SUCCESS
+                // ========================================
+
+                if (
+                    response.ok &&
+                    data.success === true
+                ) {
+
+
+                    showMessage(
+                        "Login successful! Opening dashboard...",
+                        "success"
+                    );
+
+
+                    // ------------------------------------
+                    // IMPORTANT
+                    // DIRECT DASHBOARD
+                    // ------------------------------------
+
+                    setTimeout(
+                        function() {
+
+                            window.location.replace(
+                                "{{ url_for('dashboard') }}"
+                            );
+
+                        },
+                        500
+                    );
+
+
+                    return;
+                }
+
+
+                // ========================================
+                // LOGIN FAILED
+                // ========================================
+
+                showMessage(
+
+                    data.message ||
+                    "Invalid email or password.",
+
+                    "error"
+
+                );
+
+
+                loginButton.disabled =
+                    false;
+
+
+                loginButton.textContent =
+                    "Login";
+
+
+            }
+
+
+            // ============================================
+            // NETWORK / SERVER ERROR
+            // ============================================
+
+            catch (error) {
+
+                console.error(
+                    "LOGIN ERROR:",
+                    error
+                );
+
+
+                showMessage(
+                    "Could not connect to server. Please try again.",
+                    "error"
+                );
+
+
+                loginButton.disabled =
+                    false;
+
+
+                loginButton.textContent =
+                    "Login";
+
+            }
+
+        }
+    );
+
+
+</script>
+
+
+</body>
+
+</html>
