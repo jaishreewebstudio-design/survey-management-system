@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Responses - Survey Management
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+    margin: 0;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: linear-gradient(
+        135deg,
+        #0f172a,
+        #1e3a8a
+    );
+
+    color: #222;
+}
+
+        .page {
+
+            min-height: 100vh;
+
+            padding: 30px 20px;
+        }
+
+
+        .container {
+
+            max-width: 1200px;
+
+            margin: auto;
+        }
+
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        .header {
+
+            background: white;
+
+            border-radius: 12px;
+
+            padding: 25px 30px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 3px 15px
+                rgba(0, 0, 0, 0.08);
+        }
+
+
+        .header-top {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+
+        .header h1 {
+
+            margin: 0;
+
+            font-size: 30px;
+        }
+
+
+        .header p {
+
+            margin: 8px 0 0;
+
+            color: #666;
+
+            font-size: 15px;
+        }
+
+
+        .back-btn {
+
+            display: inline-block;
+
+            text-decoration: none;
+
+            background: #4f46e5;
+
+            color: white;
+
+            padding: 11px 18px;
+
+            border-radius: 8px;
+
+            font-weight: 600;
+
+            transition: 0.2s;
+        }
+
+
+        .back-btn:hover {
+
+            background: #4338ca;
+        }
+
+
+        /* =========================================
+           ERROR
+        ========================================= */
+
+        .error {
+
+            background: #fee2e2;
+
+            color: #991b1b;
+
+            padding: 15px;
+
+            border-radius: 8px;
+
+            margin-bottom: 20px;
+
+            display: none;
+
+            border: 1px solid #fecaca;
+        }
+
+
+        /* =========================================
+           SUMMARY
+        ========================================= */
+
+        .summary {
+
+            background: white;
+
+            border-radius: 12px;
+
+            padding: 20px 25px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 3px 15px
+                rgba(0, 0, 0, 0.08);
+        }
+
+
+        .summary-title {
+
+            color: #666;
+
+            font-size: 14px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .summary-count {
+
+            font-size: 28px;
+
+            font-weight: bold;
+
+            color: #222;
+        }
+
+
+        /* =========================================
+           TABLE
+        ========================================= */
+
+        .table-container {
+
+            background: white;
+
+            border-radius: 12px;
+
+            padding: 20px;
+
+            box-shadow:
+                0 3px 15px
+                rgba(0, 0, 0, 0.08);
+
+            overflow-x: auto;
+        }
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 950px;
+        }
+
+
+        thead {
+
+            background: #f4f5f9;
+        }
+
+
+        th {
+
+            text-align: left;
+
+            padding: 15px 13px;
+
+            font-size: 14px;
+
+            color: #444;
+
+            border-bottom:
+                1px solid #e2e5eb;
+
+            white-space: nowrap;
+        }
+
+
+        td {
+
+            padding: 15px 13px;
+
+            border-bottom:
+                1px solid #edf0f4;
+
+            font-size: 14px;
+
+            vertical-align: middle;
+        }
+
+
+        tbody tr:hover {
+
+            background: #fafbff;
+        }
+
+
+        /* =========================================
+           BADGES
+        ========================================= */
+
+        .id-badge {
+
+            display: inline-block;
+
+            background: #eef2ff;
+
+            color: #4338ca;
+
+            padding: 5px 9px;
+
+            border-radius: 6px;
+
+            font-weight: 600;
+
+            font-size: 13px;
+        }
+
+
+        .user-badge {
+
+            display: inline-block;
+
+            background: #ecfdf5;
+
+            color: #047857;
+
+            padding: 5px 9px;
+
+            border-radius: 6px;
+
+            font-weight: 600;
+
+            font-size: 13px;
+        }
+
+
+        .survey-name {
+
+            font-weight: 600;
+
+            color: #333;
+        }
+
+
+        .email {
+
+            color: #555;
+        }
+
+
+        .date {
+
+            color: #666;
+
+            white-space: nowrap;
+        }
+
+
+        /* =========================================
+           EMPTY / LOADING
+        ========================================= */
+
+        .empty {
+
+            text-align: center;
+
+            padding: 50px 20px;
+
+            color: #777;
+
+            display: none;
+        }
+
+
+        .loading {
+
+            text-align: center;
+
+            padding: 50px 20px;
+
+            color: #777;
+        }
+
+
+        /* =========================================
+           MOBILE
+        ========================================= */
+
+        @media (max-width: 700px) {
+
+            .page {
+
+                padding: 15px;
+            }
+
+
+            .header {
+
+                padding: 20px;
+            }
+
+
+            .header-top {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+
+            .back-btn {
+
+                width: 100%;
+
+                text-align: center;
+            }
+
+
+            .summary {
+
+                padding: 18px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="page">
+
+
+    <div class="container">
+
+
+        <!-- =====================================
+             HEADER
+        ====================================== -->
+
+        <div class="header">
+
+            <div class="header-top">
+
+
+                <div>
+
+                    <h1>
+                        Responses
+                    </h1>
+
+                    <p>
+                        Response information is generated automatically.
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="{{ url_for('dashboard') }}"
+                    class="back-btn"
+                >
+                    ← Dashboard
+                </a>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             ERROR
+        ====================================== -->
+
+        <div
+            id="errorBox"
+            class="error"
+        ></div>
+
+
+        <!-- =====================================
+             COUNT
+        ====================================== -->
+
+        <div class="summary">
+
+
+            <div class="summary-title">
+
+                Total Responses
+
+            </div>
+
+
+            <div
+                id="responseCount"
+                class="summary-count"
+            >
+
+                0
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =====================================
+             RESPONSE TABLE
+        ====================================== -->
+
+        <div class="table-container">
+
+
+            <!-- LOADING -->
+
+            <div
+                id="loading"
+                class="loading"
+            >
+
+                Loading responses...
+
+            </div>
+
+
+            <!-- EMPTY -->
+
+            <div
+                id="empty"
+                class="empty"
+            >
+
+                No responses found.
+
+            </div>
+
+
+            <!-- TABLE -->
+
+            <table
+                id="responseTable"
+                style="display: none;"
+            >
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Response ID
+                        </th>
+
+                        <th>
+                            Survey ID
+                        </th>
+
+                        <th>
+                            User ID
+                        </th>
+
+                        <th>
+                            Survey
+                        </th>
+
+                        <th>
+                            Name
+                        </th>
+
+                        <th>
+                            Email
+                        </th>
+
+                        <th>
+                            Submitted At
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody
+                    id="responseBody"
+                >
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    /* =========================================
+       ELEMENTS
+    ========================================= */
+
+    const responseCount =
+        document.getElementById(
+            "responseCount"
+        );
+
+
+    const responseBody =
+        document.getElementById(
+            "responseBody"
+        );
+
+
+    const responseTable =
+        document.getElementById(
+            "responseTable"
+        );
+
+
+    const loading =
+        document.getElementById(
+            "loading"
+        );
+
+
+    const empty =
+        document.getElementById(
+            "empty"
+        );
+
+
+    const errorBox =
+        document.getElementById(
+            "errorBox"
+        );
+
+
+    /* =========================================
+       LOAD RESPONSES
+    ========================================= */
+
+    async function loadResponses() {
+
+        loading.style.display = "block";
+
+        empty.style.display = "none";
+
+        responseTable.style.display = "none";
+
+        errorBox.style.display = "none";
+
+        responseBody.innerHTML = "";
+
+
+        try {
+
+            const response = await fetch(
+                "/api/responses",
+                {
+                    method: "GET",
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                }
+            );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "Unable to load responses."
+                );
+
+            }
+
+
+            if (!data.success) {
+
+                throw new Error(
+                    data.message ||
+                    "Unable to load responses."
+                );
+
+            }
+
+
+            /*
+             * ====================================
+             * TOTAL RESPONSE COUNT
+             * ====================================
+             */
+
+            const responses =
+                Array.isArray(data.responses)
+                    ? data.responses
+                    : [];
+
+
+            responseCount.textContent =
+                data.total_responses !== undefined
+                    ? data.total_responses
+                    : responses.length;
+
+
+            /*
+             * ====================================
+             * NO RESPONSES
+             * ====================================
+             */
+
+            if (responses.length === 0) {
+
+                loading.style.display = "none";
+
+                empty.style.display = "block";
+
+                responseTable.style.display = "none";
+
+                return;
+            }
+
+
+            /*
+             * ====================================
+             * RESPONSE ROWS
+             * ====================================
+             */
+
+            responses.forEach(
+                function (item) {
+
+                    const row =
+                        document.createElement("tr");
+
+
+                    /*
+                     * RESPONSE ID
+                     */
+
+                    const responseIdCell =
+                        document.createElement("td");
+
+                    responseIdCell.innerHTML =
+                        `
+                        <span class="id-badge">
+                            #${escapeHtml(item.id)}
+                        </span>
+                        `;
+
+
+                    /*
+                     * SURVEY ID
+                     */
+
+                    const surveyIdCell =
+                        document.createElement("td");
+
+                    surveyIdCell.innerHTML =
+                        `
+                        <span class="id-badge">
+                            #${escapeHtml(item.survey_id)}
+                        </span>
+                        `;
+
+
+                    /*
+                     * USER ID
+                     */
+
+                    const userIdCell =
+                        document.createElement("td");
+
+                    if (
+                        item.user_id !== null &&
+                        item.user_id !== undefined
+                    ) {
+
+                        userIdCell.innerHTML =
+                            `
+                            <span class="user-badge">
+                                #${escapeHtml(item.user_id)}
+                            </span>
+                            `;
+
+                    } else {
+
+                        userIdCell.textContent =
+                            "N/A";
+
+                    }
+
+
+                    /*
+                     * SURVEY NAME
+                     */
+
+                    const surveyCell =
+                        document.createElement("td");
+
+                    surveyCell.innerHTML =
+                        `
+                        <span class="survey-name">
+                            ${escapeHtml(
+                                item.survey_title ||
+                                "Survey"
+                            )}
+                        </span>
+                        `;
+
+
+                    /*
+                     * NAME
+                     */
+
+                    const nameCell =
+                        document.createElement("td");
+
+                    nameCell.textContent =
+                        item.name ||
+                        "Unknown";
+
+
+                    /*
+                     * EMAIL
+                     */
+
+                    const emailCell =
+                        document.createElement("td");
+
+                    emailCell.innerHTML =
+                        `
+                        <span class="email">
+                            ${escapeHtml(
+                                item.email ||
+                                "Not available"
+                            )}
+                        </span>
+                        `;
+
+
+                    /*
+                     * SUBMITTED AT
+                     */
+
+                    const dateCell =
+                        document.createElement("td");
+
+                    dateCell.innerHTML =
+                        `
+                        <span class="date">
+                            ${escapeHtml(
+                                item.submitted_at ||
+                                "Not available"
+                            )}
+                        </span>
+                        `;
+
+
+                    /*
+                     * ADD CELLS
+                     */
+
+                    row.appendChild(
+                        responseIdCell
+                    );
+
+                    row.appendChild(
+                        surveyIdCell
+                    );
+
+                    row.appendChild(
+                        userIdCell
+                    );
+
+                    row.appendChild(
+                        surveyCell
+                    );
+
+                    row.appendChild(
+                        nameCell
+                    );
+
+                    row.appendChild(
+                        emailCell
+                    );
+
+                    row.appendChild(
+                        dateCell
+                    );
+
+
+                    responseBody.appendChild(row);
+
+                }
+            );
+
+
+            loading.style.display = "none";
+
+            empty.style.display = "none";
+
+            responseTable.style.display = "table";
+
+
+        } catch (error) {
+
+            console.error(
+                "Responses error:",
+                error
+            );
+
+
+            loading.style.display = "none";
+
+            empty.style.display = "none";
+
+            responseTable.style.display = "none";
+
+
+            errorBox.textContent =
+                error.message ||
+                "Something went wrong while loading responses.";
+
+
+            errorBox.style.display = "block";
+
+        }
+
+    }
+
+
+    /* =========================================
+       HTML ESCAPE
+       ========================================= */
+
+    function escapeHtml(value) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "";
+
+        }
+
+
+        return String(value)
+
+            .replaceAll("&", "&amp;")
+
+            .replaceAll("<", "&lt;")
+
+            .replaceAll(">", "&gt;")
+
+            .replaceAll('"', "&quot;")
+
+            .replaceAll("'", "&#039;");
+
+    }
+
+
+    /* =========================================
+       PAGE LOAD
+    ========================================= */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            loadResponses();
+
+        }
+    );
+
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Register - Survey Management System</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+
+        body {
+            height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f172a,
+                    #1e3a8a
+                );
+        }
+
+
+        .register-box {
+
+            width: 450px;
+
+            background: white;
+
+            padding: 35px;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 10px 30px
+                rgba(0, 0, 0, 0.2);
+        }
+
+
+        .register-box h2 {
+
+            text-align: center;
+
+            margin-bottom: 20px;
+
+            color: #1e3a8a;
+        }
+
+
+        .input-group {
+
+            margin-bottom: 15px;
+        }
+
+
+        .input-group label {
+
+            display: block;
+
+            margin-bottom: 6px;
+
+            font-weight: 600;
+        }
+
+
+        .input-group input {
+
+            width: 100%;
+
+            padding: 12px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 8px;
+
+            outline: none;
+        }
+
+
+        .input-group input:focus {
+
+            border-color: #2563eb;
+        }
+
+
+        .btn {
+
+            width: 100%;
+
+            padding: 12px;
+
+            border: none;
+
+            background: #2563eb;
+
+            color: white;
+
+            font-size: 16px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+        }
+
+
+        .btn:hover {
+
+            background: #1d4ed8;
+        }
+
+
+        .btn:disabled {
+
+            background: #93c5fd;
+
+            cursor: not-allowed;
+        }
+
+
+        .link {
+
+            text-align: center;
+
+            margin-top: 15px;
+        }
+
+
+        .link a {
+
+            text-decoration: none;
+
+            color: #2563eb;
+
+            font-weight: bold;
+        }
+
+
+        /* Success / Error Message */
+
+        .message {
+
+            display: none;
+
+            padding: 10px;
+
+            margin-bottom: 15px;
+
+            border-radius: 8px;
+
+            text-align: center;
+
+            font-size: 14px;
+        }
+
+
+        .success {
+
+            display: block;
+
+            background: #dcfce7;
+
+            color: #166534;
+        }
+
+
+        .error {
+
+            display: block;
+
+            background: #fee2e2;
+
+            color: #991b1b;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="register-box">
+
+
+    <h2>Create Account</h2>
+
+
+    <!-- IMPORTANT:
+         JavaScript isi message show karega -->
+
+    <div
+        id="message"
+        class="message">
+    </div>
+
+
+    <!-- REGISTER FORM -->
+
+    <form id="registerForm">
+
+
+        <!-- FULL NAME -->
+
+        <div class="input-group">
+
+            <label for="name">
+                Full Name
+            </label>
+
+            <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Enter your full name"
+                required
+            >
+
+        </div>
+
+
+        <!-- EMAIL -->
+
+        <div class="input-group">
+
+            <label for="email">
+                Email Address
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+            >
+
+        </div>
+
+
+        <!-- MOBILE -->
+
+        <div class="input-group">
+
+            <label for="mobile">
+                Mobile Number
+            </label>
+
+            <input
+                type="tel"
+                id="mobile"
+                name="mobile"
+                placeholder="Enter your mobile number"
+                required
+            >
+
+        </div>
+
+
+        <!-- PASSWORD -->
+
+        <div class="input-group">
+
+            <label for="password">
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter password"
+                required
+            >
+
+        </div>
+
+
+        <!-- CONFIRM PASSWORD -->
+
+        <div class="input-group">
+
+            <label for="confirm_password">
+                Confirm Password
+            </label>
+
+            <input
+                type="password"
+                id="confirm_password"
+                name="confirm_password"
+                placeholder="Confirm password"
+                required
+            >
+
+        </div>
+
+
+        <!-- REGISTER BUTTON -->
+
+        <button
+            type="submit"
+            class="btn"
+            id="registerButton">
+
+            Register
+
+        </button>
+
+
+        <!-- LOGIN LINK -->
+
+        <div class="link">
+
+            <a href="{{ url_for('login_page') }}">
+                Already have an account? Login
+            </a>
+
+        </div>
+
+
+    </form>
+
+
+</div>
+
+
+<script>
+
+
+    // =====================================================
+    // REGISTER FORM
+    // =====================================================
+
+    document
+        .getElementById("registerForm")
+        .addEventListener(
+            "submit",
+            async function(event) {
+
+
+                // Page reload prevent
+                event.preventDefault();
+
+
+                // =================================================
+                // GET INPUT VALUES
+                // =================================================
+
+                const name =
+                    document
+                        .getElementById("name")
+                        .value
+                        .trim();
+
+
+                const email =
+                    document
+                        .getElementById("email")
+                        .value
+                        .trim();
+
+
+                const mobile =
+                    document
+                        .getElementById("mobile")
+                        .value
+                        .trim();
+
+
+                const password =
+                    document
+                        .getElementById("password")
+                        .value;
+
+
+                const confirmPassword =
+                    document
+                        .getElementById("confirm_password")
+                        .value;
+
+
+                // =================================================
+                // MESSAGE
+                // =================================================
+
+                const message =
+                    document
+                        .getElementById("message");
+
+
+                const registerButton =
+                    document
+                        .getElementById("registerButton");
+
+
+                // Clear old message
+
+                message.className =
+                    "message";
+
+                message.innerText = "";
+
+
+                // =================================================
+                // VALIDATION
+                // =================================================
+
+                if (
+                    !name ||
+                    !email ||
+                    !mobile ||
+                    !password ||
+                    !confirmPassword
+                ) {
+
+                    message.className =
+                        "message error";
+
+                    message.innerText =
+                        "Please fill all fields.";
+
+                    return;
+                }
+
+
+                // =================================================
+                // PASSWORD CHECK
+                // =================================================
+
+                if (
+                    password !==
+                    confirmPassword
+                ) {
+
+                    message.className =
+                        "message error";
+
+                    message.innerText =
+                        "Passwords do not match.";
+
+                    return;
+                }
+
+
+                // =================================================
+                // PASSWORD LENGTH
+                // =================================================
+
+                if (password.length < 6) {
+
+                    message.className =
+                        "message error";
+
+                    message.innerText =
+                        "Password must contain at least 6 characters.";
+
+                    return;
+                }
+
+
+                // =================================================
+                // DISABLE BUTTON
+                // =================================================
+
+                registerButton.disabled = true;
+
+                registerButton.innerText =
+                    "Registering...";
+
+
+                try {
+
+
+                    // =================================================
+                    // FLASK API
+                    // =================================================
+
+                    const response =
+                        await fetch(
+                            "/api/register",
+                            {
+
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify({
+
+                                        name: name,
+
+                                        email: email,
+
+                                        mobile: mobile,
+
+                                        password: password,
+
+                                        confirm_password:
+                                            confirmPassword
+
+                                    })
+
+                            }
+                        );
+
+
+                    // =================================================
+                    // RESPONSE
+                    // =================================================
+
+                    const data =
+                        await response.json();
+
+
+                    console.log(
+                        "Register API Response:",
+                        data
+                    );
+
+
+                    // =================================================
+                    // SUCCESS
+                    // =================================================
+
+                    if (
+                        response.ok &&
+                        data.success
+                    ) {
+
+                        message.className =
+                            "message success";
+
+                        message.innerText =
+                            "Registration successful! Redirecting to login...";
+
+
+                        // Redirect to login
+
+                        setTimeout(
+                            function() {
+
+                                window.location.href =
+                                    "{{ url_for('login_page') }}";
+
+                            },
+                            1500
+                        );
+
+                    }
+
+
+                    // =================================================
+                    // ERROR FROM FLASK
+                    // =================================================
+
+                    else {
+
+                        message.className =
+                            "message error";
+
+                        message.innerText =
+                            data.message ||
+                            "Registration failed.";
+
+
+                        registerButton.disabled =
+                            false;
+
+                        registerButton.innerText =
+                            "Register";
+
+                    }
+
+
+                }
+
+
+                // =================================================
+                // NETWORK / SERVER ERROR
+                // =================================================
+
+                catch (error) {
+
+                    console.error(
+                        "Registration Error:",
+                        error
+                    );
+
+
+                    message.className =
+                        "message error";
+
+                    message.innerText =
+                        "Server error. Please try again.";
+
+
+                    registerButton.disabled =
+                        false;
+
+                    registerButton.innerText =
+                        "Register";
+
+                }
+
+            }
+        );
+
+</script>
+
+
+</body>
+
+</html>

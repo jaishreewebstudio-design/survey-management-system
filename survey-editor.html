@@ -1,0 +1,93 @@
+<h1>
+    Survey Editor
+</h1>
+
+<div class="top-actions">
+
+    <a
+        href="{{ url_for('surveys') }}"
+        class="btn back-btn"
+    >
+        ← All Surveys
+    </a>
+
+    <button
+        type="button"
+        class="btn save-btn"
+        onclick="saveSurvey()"
+    >
+        💾 Save
+    </button>
+
+    <button
+        type="button"
+        class="btn publish-btn"
+        onclick="publishSurvey()"
+    >
+        🚀 Publish
+    </button>
+
+</div>
+
+
+<!-- MESSAGE -->
+
+<div
+    id="message"
+    class="message"
+></div>
+
+
+<!-- ================= SURVEY DETAILS ================= -->
+
+<div class="survey-info">
+
+    <label for="surveyTitle">
+        Survey Title
+    </label>
+
+    <input
+        type="text"
+        id="surveyTitle"
+        placeholder="Survey title"
+    >
+
+
+    <label for="surveyDescription">
+        Survey Description
+    </label>
+
+    <textarea
+        id="surveyDescription"
+        placeholder="Survey description"
+    ></textarea>
+
+</div>
+
+
+<!-- ================= QUESTIONS ================= -->
+
+<div class="questions-header">
+
+    <h2>
+        Questions
+    </h2>
+
+    <button
+        type="button"
+        class="btn add-question-btn"
+        onclick="addQuestion()"
+    >
+        ➕ Add Question
+    </button>
+
+</div>
+
+
+<div id="questionsContainer">
+
+    <div class="empty">
+        Loading questions...
+    </div>
+
+</div>
